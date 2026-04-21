@@ -4,7 +4,18 @@ import type {
   TranscriptChunk,
 } from "./types";
 
-const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
+function normalizeApiBase(raw: string | undefined): string {
+  if (raw == null || !String(raw).trim()) return "";
+  return String(raw).trim().replace(/\/+$/, "");
+}
+
+const API_BASE = normalizeApiBase(import.meta.env.VITE_API_BASE as string | undefined);
+
+function apiUrl(path: string): string {
+  const p = path.startsWith("/") ? path : `/${path}`;
+  if (!API_BASE) return p;
+  return `${API_BASE}${p}`;
+}
 
 async function extractErrorDetail(r: Response): Promise<string> {
   const txt = await r.text().catch(() => "");
@@ -25,14 +36,20 @@ function buildHeaders(settings: AppSettings, extra: Record<string, string> = {})
 }
 
 export async function createSession(): Promise<{ session_id: string; started_at: number }> {
-  const r = await fetch(`${API_BASE}/api/session`, { method: "POST" });
-  if (!r.ok) throw new Error(`createSession failed: ${r.status}`);
+  const r = await fetch(apiUrl("/api/session"), { method: "POST" });
+  if (!r.ok) {
+    const detail = await extractErrorDetail(r);
+    throw new Error(`createSession failed: ${r.status} - ${detail}`.slice(0, 500));
+  }
   return r.json();
 }
 
 export async function fetchDefaults(): Promise<Omit<AppSettings, "groq_api_key">> {
-  const r = await fetch(`${API_BASE}/api/settings/defaults`);
-  if (!r.ok) throw new Error(`fetchDefaults failed: ${r.status}`);
+  const r = await fetch(apiUrl("/api/settings/defaults"));
+  if (!r.ok) {
+    const detail = await extractErrorDetail(r);
+    throw new Error(`fetchDefaults failed: ${r.status} - ${detail}`.slice(0, 500));
+  }
   return r.json();
 }
 
@@ -53,7 +70,7 @@ export async function uploadTranscribeChunk(
   form.append("transcribe_model", settings.transcribe_model);
   form.append("audio", params.blob, params.filename);
 
-  const r = await fetch(`${API_BASE}/api/transcribe`, {
+  const r = await fetch(apiUrl("/api/transcribe"), {
     method: "POST",
     headers: buildHeaders(settings),
     body: form,
@@ -72,7 +89,7 @@ export async function requestSuggestions(
   settings: AppSettings,
   session_id: string,
 ): Promise<SuggestionBatch> {
-  const r = await fetch(`${API_BASE}/api/suggestions`, {
+  const r = await fetch(apiUrl("/api/suggestions"), {
     method: "POST",
     headers: buildHeaders(settings, { "Content-Type": "application/json" }),
     body: JSON.stringify({
@@ -120,7 +137,7 @@ export async function streamChat(
     expanded_temperature: settings.expanded_temperature,
   };
 
-  const r = await fetch(`${API_BASE}/api/chat`, {
+  const r = await fetch(apiUrl("/api/chat"), {
     method: "POST",
     headers: buildHeaders(settings, { "Content-Type": "application/json" }),
     body: JSON.stringify(body),
@@ -162,5 +179,5 @@ export async function streamChat(
 }
 
 export function exportUrl(session_id: string): string {
-  return `${API_BASE}/api/export?session_id=${encodeURIComponent(session_id)}`;
+  return `${apiUrl("/api/export")}?session_id=${encodeURIComponent(session_id)}`;
 }

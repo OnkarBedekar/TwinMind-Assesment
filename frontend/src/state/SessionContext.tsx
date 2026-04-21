@@ -137,7 +137,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setSessionId(s.session_id);
         setStartedAt(s.started_at);
       })
-      .catch((e) => setLastError(`Backend unreachable: ${String(e)}`));
+      .catch((e) => setLastError(`API error: ${String(e)}`));
   }, []);
 
   const updateSettings = useCallback((patch: Partial<AppSettings>) => {
