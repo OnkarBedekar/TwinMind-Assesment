@@ -69,6 +69,15 @@ def _raise_model_permission_if_blocked(err: Exception, model: str) -> None:
         )
 
 
+@app.get("/")
+def root() -> Dict[str, str]:
+    return {
+        "service": "TwinMind API",
+        "health": "/api/health",
+        "docs": "/docs",
+    }
+
+
 @app.get("/api/health")
 def health() -> Dict[str, Any]:
     return {"ok": True, "ts": time.time()}
