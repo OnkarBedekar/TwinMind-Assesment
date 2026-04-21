@@ -1,6 +1,6 @@
-# TwinMind — Live Suggestions
+# TwinMind - Live Suggestions
 
-A small meeting copilot: record from the mic, get rolling transcript chunks, three live AI suggestion cards, and a chat panel. Models run on **Groq** (Whisper for speech, a large chat model for text). You paste your own Groq API key in the app — it stays in the browser and is sent to the backend on each request.
+A small meeting copilot: record from the mic, get rolling transcript chunks, three live AI suggestion cards, and a chat panel. Models run on **Groq** (Whisper for speech, a large chat model for text). You paste your own Groq API key in the app - it stays in the browser and is sent to the backend on each request.
 
 **Stack:** FastAPI (Python) · React, TypeScript, Vite, Tailwind
 
@@ -27,7 +27,7 @@ chmod +x run.sh   # once, if needed
 
 ## Run without `run.sh`
 
-Terminal 1 — backend:
+Terminal 1 - backend:
 
 ```bash
 python3 -m venv .venv
@@ -35,7 +35,7 @@ python3 -m venv .venv
 .venv/bin/uvicorn backend.main:app --reload --port 8000
 ```
 
-Terminal 2 — frontend:
+Terminal 2 - frontend:
 
 ```bash
 cd frontend
@@ -58,7 +58,7 @@ Defaults and prompt text live in [`backend/prompts.py`](backend/prompts.py); the
 
 - **Latency vs context:** A longer suggestion context window improves grounding but increases tokens and latency on every refresh. 180s was chosen as a balance for “what just happened” without sending the entire meeting every 30s.
 - **Transcript vs suggestion timers:** Audio is chunked on a **chunk** interval (default 30s) while suggestions refresh on **auto_refresh** (default 30s). They are separate timers so recording stays simple; manual **Refresh** flushes the current audio chunk first so the latest speech is transcribed before new suggestions run.
-- **In-memory sessions:** The server keeps one session per browser load. No database — fast to build and fine for the assignment, but a restart loses server-side state (the export JSON is the durable artifact for grading).
+- **In-memory sessions:** The server keeps one session per browser load. No database - fast to build and fine for the assignment, but a restart loses server-side state (the export JSON is the durable artifact for grading).
 - **Streaming chat:** Assistant replies stream over SSE so the UI shows tokens as they arrive; tradeoff is slightly more client parsing logic versus a single blocking JSON response.
 - **Fixed assignment models:** Whisper Large V3 and GPT-OSS 120B are the defaults everywhere so behavior is comparable across submissions; temperatures stay editable for small quality tweaks without changing models.
 

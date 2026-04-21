@@ -148,7 +148,7 @@ export function SettingsModal({ open, onClose }: Props) {
               />
               <NumberField
                 label="Suggestion temperature"
-                hint="Higher = more varied suggestions (0–2 typical)."
+                hint="Higher = more varied suggestions (0-2 typical)."
                 value={draft.suggestion_temperature}
                 onChange={(n) =>
                   setDraft({ ...draft, suggestion_temperature: n })
@@ -157,14 +157,14 @@ export function SettingsModal({ open, onClose }: Props) {
               />
               <NumberField
                 label="Chat temperature"
-                hint="For typed chat messages (0–2 typical)."
+                hint="For typed chat messages (0-2 typical)."
                 value={draft.chat_temperature}
                 onChange={(n) => setDraft({ ...draft, chat_temperature: n })}
                 step={0.05}
               />
               <NumberField
                 label="Expanded answer temperature"
-                hint="When you tap a suggestion card (0–2 typical)."
+                hint="When you tap a suggestion card (0-2 typical)."
                 value={draft.expanded_temperature}
                 onChange={(n) =>
                   setDraft({ ...draft, expanded_temperature: n })
