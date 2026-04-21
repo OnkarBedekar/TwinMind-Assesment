@@ -140,6 +140,37 @@ export function SettingsModal({ open, onClose }: Props) {
                 value={draft.auto_refresh_seconds}
                 onChange={(n) => setDraft({ ...draft, auto_refresh_seconds: n })}
               />
+              <NumberField
+                label="Mic chunk length (seconds)"
+                hint="How long each recording segment is before it is sent for transcription."
+                value={draft.chunk_seconds}
+                onChange={(n) => setDraft({ ...draft, chunk_seconds: n })}
+              />
+              <NumberField
+                label="Suggestion temperature"
+                hint="Higher = more varied suggestions (0–2 typical)."
+                value={draft.suggestion_temperature}
+                onChange={(n) =>
+                  setDraft({ ...draft, suggestion_temperature: n })
+                }
+                step={0.05}
+              />
+              <NumberField
+                label="Chat temperature"
+                hint="For typed chat messages (0–2 typical)."
+                value={draft.chat_temperature}
+                onChange={(n) => setDraft({ ...draft, chat_temperature: n })}
+                step={0.05}
+              />
+              <NumberField
+                label="Expanded answer temperature"
+                hint="When you tap a suggestion card (0–2 typical)."
+                value={draft.expanded_temperature}
+                onChange={(n) =>
+                  setDraft({ ...draft, expanded_temperature: n })
+                }
+                step={0.05}
+              />
             </div>
           </Section>
         </div>
